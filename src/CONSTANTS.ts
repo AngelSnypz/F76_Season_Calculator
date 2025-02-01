@@ -1,0 +1,4 @@
+export const START_SCORE=1000;
+export const SCORE_GROWTH_PER_LEVEL=25;
+export const SCORE_GROWTH_END_LEVEL=100;
+export const POST_TRANSITION_SCORE_PER_RANK=3500;
