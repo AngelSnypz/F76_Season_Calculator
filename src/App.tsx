@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import './App.css'
 import styled from 'styled-components'
-import { POST_TRANSITION_SCORE_PER_RANK, SCORE_GROWTH_PER_LEVEL, START_SCORE } from './CONSTANTS'
+import {   DAILY_SCORE_TOTAL, POST_TRANSITION_SCORE_PER_RANK, WEEKLY_SCORE_TOTAL} from './CONSTANTS'
 
 const Container = styled.div`
 display: flex;
@@ -16,14 +16,9 @@ const LabelledInput = styled.div`
   gap: 8px;
 `
 
-function calculateEscalatingAddition(start: number, increment: number, intervals: number): number {
-  let total = 0;
-  for (let i = 0; i < intervals; i++) {
-    total += start + (i * increment);
-  }
-  return total;
+const getScoreForLevel =(level:number)=>{
+  return 12.5*Math.pow(level,2)+(962.5*level)-975
 }
-
 
 function App() {
   const [scoreLevel, setScoreLevel] = useState(124);
@@ -31,15 +26,16 @@ function App() {
   const [selectedDate, setSelectedDate] = useState('2025-03-04');
 
   const scoreToTarget = useMemo(() => {
+    //pre 100 calcs
     const below100 = Math.min(desiredLevel, 100);
-    const diffBelow100 = below100 - scoreLevel;
-    const sub100Remaining = calculateEscalatingAddition(START_SCORE, SCORE_GROWTH_PER_LEVEL, diffBelow100);
+    const scoreToGoBelow100 = getScoreForLevel(below100)-getScoreForLevel(Math.min(scoreLevel,100));
 
-    const diffAbove100 = (desiredLevel % 100) - (scoreLevel % 100);
+    //post 100 calcs
+    const diffAbove100 = Math.max(desiredLevel - 100,0) - Math.max(scoreLevel - 100,0);
     const above100Remaining = diffAbove100 * POST_TRANSITION_SCORE_PER_RANK;
 
     return {
-      scoreRemaining: sub100Remaining + above100Remaining
+      scoreRemaining: scoreToGoBelow100 + above100Remaining
     };
   }, [desiredLevel, scoreLevel]);
 
@@ -59,6 +55,7 @@ function App() {
     return daysDiff;
   }, [selectedDate]);
 
+
   return (
     <Container>
       <div>current date: {formattedDate}</div>
@@ -75,8 +72,9 @@ function App() {
         <input type="number" value={desiredLevel} onChange={(e) => setDesiredLevel(parseInt(e.target.value))} />
       </LabelledInput>
       <div>you have {daysLeft} days left to complete</div>
-      <div>{scoreToTarget.scoreRemaining > 0 ? `Score Required: ${scoreToTarget.scoreRemaining}` : 'Congrats! You made it!'}</div>
       <div>Score Required Per Day: {Math.ceil(scoreToTarget.scoreRemaining/daysLeft).toFixed(0)}</div>
+      <div>{scoreToTarget.scoreRemaining > 0 ? `Score Required Total: ${scoreToTarget.scoreRemaining}` : 'Congrats! You made it!'}</div>
+      <div>Score Available (no Grind/Boost): {daysLeft*DAILY_SCORE_TOTAL+Math.floor(daysLeft/7)*WEEKLY_SCORE_TOTAL}</div>
     </Container>
   )
 }
