@@ -9,7 +9,7 @@ import { Container } from "./Components/ScoreCalcContainer";
 import { LabelledInput } from "./Components/LabelledInput";
 
 export const ScoreCalc = () => {
-  const [scoreLevel, setScoreLevel] = useState(124);
+  const [scoreLevel, setScoreLevel] = useState(1);
   const [desiredLevel, setDesiredLevel] = useState(150);
   const [selectedDate, setSelectedDate] = useState("2025-03-04");
 
