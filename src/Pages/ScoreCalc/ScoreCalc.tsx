@@ -1,27 +1,12 @@
 import { useMemo, useState } from "react";
-import styled from "styled-components";
 import {
   DAILY_SCORE_TOTAL,
   POST_TRANSITION_SCORE_PER_RANK,
   WEEKLY_SCORE_TOTAL,
-} from "../../CONSTANTS";
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-`;
-
-const LabelledInput = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-`;
-
-const getScoreForLevel = (level: number) => {
-  return 12.5 * Math.pow(level, 2) + 962.5 * level - 975;
-};
+} from "./Helpers/ScoreConsts";
+import { getScoreForLevel } from "./Helpers/ScoreForLevel";
+import { Container } from "./Components/ScoreCalcContainer";
+import { LabelledInput } from "./Components/LabelledInput";
 
 export const ScoreCalc = () => {
   const [scoreLevel, setScoreLevel] = useState(124);
